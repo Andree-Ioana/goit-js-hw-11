@@ -1,2 +1,37 @@
 @import './common';
 @import './example';
+
+.container-search{
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: gray;
+}
+.search-form{
+    padding-left: 40%;
+}
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.photo-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.photo-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.photo-card .info {
+    padding: 10px;
+}
+
+.photo-card .info-item {
+    margin: 5px 0;
+}
