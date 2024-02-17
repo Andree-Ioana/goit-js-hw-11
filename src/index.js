@@ -13,36 +13,30 @@ const loadMoreButton = document.querySelector(".load-more");
 let currentPage = 1;
 let currentQuery = '';
 
-
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
   history: false,
 });
 
-
 function displayImages(images) {
-  gallery.innerHTML = ""; 
+  gallery.innerHTML = "";
 
   images.forEach(imageData => {
     const card = createPhotoCard(imageData);
     gallery.appendChild(card);
   });
 
- 
   lightbox.refresh();
 
-  
   if (images.length === perPage) {
     loadMoreButton.style.display = "block";
   } else {
     loadMoreButton.style.display = "none";
   }
 
-  
   window.alert(`Hooray! We found ${images.length} images.`);
 }
-
 
 function createPhotoCard(photoData) {
   const card = document.createElement("div");
@@ -82,7 +76,6 @@ function createPhotoCard(photoData) {
   return card;
 }
 
-
 async function fetchImages(query, page = 1) {
   try {
     const response = await axios.get(baseUrl, {
@@ -105,9 +98,8 @@ async function fetchImages(query, page = 1) {
   }
 }
 
-
 searchForm.addEventListener("submit", async (event) => {
-  event.preventDefault(); 
+  event.preventDefault();
 
   const searchQuery = event.target.elements.searchQuery.value.trim();
   if (!searchQuery) {
@@ -115,7 +107,7 @@ searchForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  currentPage = 1; 
+  currentPage = 1;
   currentQuery = searchQuery;
   const images = await fetchImages(searchQuery);
   if (images.length > 0) {
@@ -124,7 +116,6 @@ searchForm.addEventListener("submit", async (event) => {
     window.alert('Sorry, there are no images matching your search query. Please try again.');
   }
 });
-
 
 loadMoreButton.addEventListener("click", async () => {
   currentPage++;
@@ -137,6 +128,5 @@ loadMoreButton.addEventListener("click", async () => {
     window.alert("We're sorry, but you've reached the end of search results.");
   }
 });
-
 
 loadMoreButton.style.display = "none";
