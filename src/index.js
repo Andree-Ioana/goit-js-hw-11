@@ -1,6 +1,7 @@
 import axios from 'axios';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import Notiflix from 'notiflix';
 
 const apiKey = "42271734-ccd5724e9f8ad9dee5c32e4fe";
 const baseUrl = "https://pixabay.com/api/";
@@ -12,6 +13,7 @@ const loadMoreButton = document.querySelector(".load-more");
 
 let currentPage = 1;
 let currentQuery = '';
+let isFirstSearch = true;
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
@@ -35,7 +37,10 @@ function displayImages(images) {
     loadMoreButton.style.display = "none";
   }
 
-  window.alert(`Hooray! We found ${images.length} images.`);
+  if (isFirstSearch) {
+    window.alert(`Hooray! Am găsit ${images.length} imagini.`);
+    isFirstSearch = false;
+  }
 }
 
 function createPhotoCard(photoData) {
@@ -58,10 +63,10 @@ function createPhotoCard(photoData) {
   info.classList.add("info");
 
   const infoItems = [
-    { label: "Likes", value: photoData.likes },
-    { label: "Views", value: photoData.views },
-    { label: "Comments", value: photoData.comments },
-    { label: "Downloads", value: photoData.downloads }
+    { label: "Aprecieri", value: photoData.likes },
+    { label: "Vizualizări", value: photoData.views },
+    { label: "Comentarii", value: photoData.comments },
+    { label: "Descărcări", value: photoData.downloads }
   ];
 
   infoItems.forEach(item => {
@@ -92,8 +97,8 @@ async function fetchImages(query, page = 1) {
 
     return response.data.hits;
   } catch (error) {
-    console.error('Error fetching images:', error);
-    window.alert('An error occurred while fetching images. Please try again later.');
+    console.error('Eroare la preluarea imaginilor:', error);
+    window.alert('A apărut o eroare la preluarea imaginilor. Te rugăm să încerci din nou mai târziu.');
     return [];
   }
 }
@@ -103,17 +108,18 @@ searchForm.addEventListener("submit", async (event) => {
 
   const searchQuery = event.target.elements.searchQuery.value.trim();
   if (!searchQuery) {
-    window.alert('Please enter a search query.');
+    window.alert('Te rugăm să introduci un termen de căutare.');
     return;
   }
 
   currentPage = 1;
   currentQuery = searchQuery;
+  isFirstSearch = true;
   const images = await fetchImages(searchQuery);
   if (images.length > 0) {
     displayImages(images);
   } else {
-    window.alert('Sorry, there are no images matching your search query. Please try again.');
+    window.alert('Ne pare rău, nu am găsit imagini care să corespundă căutării tale. Te rugăm să încerci din nou.');
   }
 });
 
@@ -125,8 +131,26 @@ loadMoreButton.addEventListener("click", async () => {
     displayImages(images);
     window.scrollTo(0, currentScrollPos);
   } else {
-    window.alert("We're sorry, but you've reached the end of search results.");
+    window.alert("Ne pare rău, ai ajuns la sfârșitul rezultatelor de căutare.");
   }
 });
 
-loadMoreButton.style.display = "none";
+// Funcția preloader
+const preloader = document.querySelector('.preloader');
+
+const fadeEffect = () => {
+  setInterval(() => {
+    if (!preloader.style.opacity) {
+      preloader.style.opacity = 1;
+    }
+    if (preloader.style.opacity > 0) {
+      preloader.style.opacity -= 0.1;
+    } else {
+      clearInterval(fadeEffect);
+      preloader.remove();
+    }
+  }, 200);
+};
+
+fadeEffect();
+
