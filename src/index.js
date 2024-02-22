@@ -22,7 +22,7 @@ const lightbox = new SimpleLightbox('.gallery a', {
 });
 
 function displayImages(images) {
-  gallery.innerHTML = "";
+  
 
   images.forEach(imageData => {
     const card = createPhotoCard(imageData);
